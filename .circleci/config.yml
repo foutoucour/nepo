@@ -42,9 +42,27 @@ pipenv_check: &pipenv_check
   command: pipenv check
 
 jobs:
-  python-3.5:
+  python-2:
     docker:
-      - image: circleci/python:3.5
+      - image: circleci/python:2
+    steps:
+      - checkout
+      - run:
+          <<: *requirements
+      - run:
+          <<: *pipenv_check
+      - run:
+          <<: *git_config
+      - run:
+          <<: *run_tests_with_coverage
+      - run:
+          <<: *rm_virtualenv
+      - run:
+          <<: *run_cli
+
+  python-3:
+    docker:
+      - image: circleci/python:3
     steps:
       - checkout
       - run:
@@ -71,4 +89,5 @@ workflows:
   version: 2
   build:
     jobs:
-      - "python-3.5"
+      - "python-3"
+      - "python-2"
