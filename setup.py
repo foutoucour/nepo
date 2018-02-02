@@ -18,6 +18,7 @@ install_reqs = convert_deps_to_pip(pfile['packages'], r=False)
 setup(
     name=manifest.name,
     version=manifest.version,
+    setup_requires=['setuptools_scm'],
     description=manifest.description,
     author=manifest.author,
     author_email=manifest.email,

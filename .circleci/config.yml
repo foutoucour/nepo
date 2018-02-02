@@ -15,7 +15,7 @@ git_config: &git_config
 
 run_test_with_coverage: &run_tests_with_coverage
   name: Run test with coveage
-  command: pipenv run pytest -v tests --junit-xml=./log/junit.xml --cov-branch --cov --cov-report xml
+  command: pipenv run pytest -v tests --junit-xml=./log/junit.xml --cov-branch --cov=src --cov-report xml
 
 coverage_report: &coverage_report
   name: Coverage report
@@ -35,7 +35,7 @@ run_cli: &run_cli
   command: |
     pipenv install pipenv
     pipenv run pip install .
-    pipenv run repo --version
+    pipenv run nepo --version
 
 pipenv_check: &pipenv_check
   name: Check for security vulnerabilities
