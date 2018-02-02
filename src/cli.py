@@ -4,7 +4,6 @@ import sys
 import click
 from click_didyoumean import DYMMixin
 from click_help_colors import HelpColorsGroup
-
 import crayons
 
 from src import manifest
