@@ -4,9 +4,7 @@ import sys
 import click
 from click_didyoumean import DYMMixin
 from click_help_colors import HelpColorsGroup
-import crayons
 
-from src import manifest
 from src import core
 
 logger = logging.getLogger('voodoo')
@@ -23,7 +21,7 @@ class AllGroup(DYMMixin, HelpColorsGroup, click.Group):  # pylint: disable=too-m
     help_headers_color='yellow',
     help_options_color='green'
 )
-@click.version_option(prog_name=crayons.white(manifest.name, bold=True), version=manifest.version)
+@click.version_option()
 def entry_point():
     pass
 
