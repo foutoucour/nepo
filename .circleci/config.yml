@@ -1,0 +1,93 @@
+version: 2.0
+
+requirements: &requirements
+  name: Install requirements
+  command: |
+    sudo pip install "pipenv>=9.0.3"
+    pipenv install --dev
+
+git_config: &git_config
+  name: Git Configuration
+  command: |
+    git config --global user.email "root@localhost"
+    git config --global user.name "nepo"
+
+
+run_test_with_coverage: &run_tests_with_coverage
+  name: Run test with coveage
+  command: pipenv run pytest -v tests --junit-xml=./log/junit.xml --cov-branch --cov=src --cov-report xml
+
+coverage_report: &coverage_report
+  name: Coverage report
+  command: pipenv run coverage report -m
+
+coverage_report_codacy: &coverage_report_codacy
+  name: Codacy Coverage
+  command: |
+    pipenv run python-codacy-coverage -r ./coverage.xml
+
+rm_virtualenv: &rm_virtualenv
+  name: Remove Virtualenv
+  command: pipenv --rm
+
+run_cli: &run_cli
+  name: Installation
+  command: |
+    pipenv install pipenv
+    pipenv run pip install .
+    pipenv run nepo --version
+
+pipenv_check: &pipenv_check
+  name: Check for security vulnerabilities
+  command: pipenv check
+
+jobs:
+  python-2:
+    docker:
+      - image: circleci/python:2
+    steps:
+      - checkout
+      - run:
+          <<: *requirements
+      - run:
+          <<: *pipenv_check
+      - run:
+          <<: *git_config
+      - run:
+          <<: *run_tests_with_coverage
+      - run:
+          <<: *rm_virtualenv
+      - run:
+          <<: *run_cli
+
+  python-3:
+    docker:
+      - image: circleci/python:3
+    steps:
+      - checkout
+      - run:
+          <<: *requirements
+      - run:
+          <<: *pipenv_check
+      - run:
+          <<: *git_config
+      - run:
+          <<: *run_tests_with_coverage
+      - run:
+          <<: *coverage_report
+      - run:
+          <<: *coverage_report_codacy
+      - run:
+          <<: *rm_virtualenv
+      - run:
+          <<: *run_cli
+      - store_test_results:
+          path: ./log
+
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - "python-3"
+      - "python-2"

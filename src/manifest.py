@@ -1,0 +1,5 @@
+name = 'nepo'
+description = 'universal url opener'
+url = 'https://github.com/foutoucour/nepo'
+email = 'kender@gmail.com'
+author = 'Jordi Riera'
