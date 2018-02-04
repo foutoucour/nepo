@@ -36,7 +36,7 @@ rm_virtualenv: &rm_virtualenv
 run_cli: &run_cli
   name: Installation
   command: |
-    pipenv install .
+    pipenv install -e .
     pipenv run nepo --version
 
 pipenv_check: &pipenv_check
