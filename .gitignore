@@ -107,4 +107,6 @@ ENV/
 
 # package
 Pipfile.lock
+Pipfile
 
+/log/

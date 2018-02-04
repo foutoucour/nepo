@@ -4,21 +4,10 @@
 from setuptools import find_packages, setup
 from src import manifest
 
-try:
-    from pipenv.project import Project
-    from pipenv.utils import convert_deps_to_pip
-except ImportError:
-    raise ImportError(
-        "`pipenv` is required to install {}. Please run `pip install pipenv` then retry.".format(manifest.name)
-    )
-
-pfile = Project(chdir=False).parsed_pipfile
-install_reqs = convert_deps_to_pip(pfile['packages'], r=False)
-
 setup(
     name=manifest.name,
     use_scm_version=True,
-    setup_requires=['setuptools_scm'],
+    setup_requires=['setuptools_scm', 'pytest_runner'],
     description=manifest.description,
     author=manifest.author,
     author_email=manifest.email,
@@ -28,7 +17,18 @@ setup(
         [console_scripts]
         nepo=src.cli:entry_point
     ''',
-    install_requires=install_reqs,
+    install_requires=[
+        'click',
+        'click-didyoumean',
+        'click-help-colors',
+        'crayons',
+    ],
+    tests_require=[
+        'pytest',
+        'pytest-cov',
+        'pytest-random-order',
+        'mock',
+    ],
     include_package_data=True,
     license='MIT',
     classifiers=[
