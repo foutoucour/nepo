@@ -68,18 +68,6 @@ def github(user='', repo=''):
 def inbox():
     core.open_url("https://inbox.google.com")
 
-# codacy = lambda: core.open_url('https://codacy.com')
-#
-# cmd = click.Command('codacy', callback=codacy)
-#
-# entry_point.add_command(cmd)
-
-
-
-            # entry_point.add_command(cmd)
-
-
-# get_commands_from_config()
 
 if __name__ == '__main__':
     sys.exit(entry_point())
