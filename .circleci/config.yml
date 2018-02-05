@@ -43,8 +43,9 @@ pipenv_check: &pipenv_check
   name: Check for security vulnerabilities
   command: pipenv check
 
+
 jobs:
-  python-2:
+  python2:
     docker:
       - image: circleci/python:2
     steps:
@@ -62,7 +63,7 @@ jobs:
       - run:
           <<: *run_cli
 
-  python-3:
+  python3:
     docker:
       - image: circleci/python:3
     steps:
@@ -86,10 +87,42 @@ jobs:
       - store_test_results:
           path: ./log
 
+  deploy:
+    docker:
+      - image: circleci/python:3
+    steps:
+      - checkout
+      - run:
+          <<: *requirements
+      - run:
+          name: Init .pypirc
+          command: |
+            echo -e "[pypi]" >> ~/.pypirc
+            echo -e "username = $PYPI_USERNAME" >> ~/.pypirc
+            echo -e "password = $PYPI_PASSWORD" >> ~/.pypirc
+
+      - run:
+          name: Make Package
+          command: python setup.py sdist bdist_wheel
+
+      - run:
+          name: Upload to Pypi using Twine
+          command: |
+            pipenv install twine
+            pipenv run twine upload dist/*
+
 
 workflows:
   version: 2
-  build:
+  build_and_deploy:
     jobs:
-      - "python-3"
-      - "python-2"
+      - python3
+      - python2
+      - deploy:
+          requires:
+            - python3
+          filters:
+            tags:
+              only: /[0-9]+(\.[0-9]+)*/
+            branches:
+              ignore: /.*/
