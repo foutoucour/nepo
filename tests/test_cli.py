@@ -6,6 +6,7 @@ import mock
 from click.testing import CliRunner
 
 import src.command_manager
+import src.groups
 from src import cli
 from src import core
 
@@ -116,7 +117,7 @@ class TestInbox(Base):
         :param mock.MagicMock mock_open_url: mock
         """
         self.runner.invoke(self.command, [self.name, self.url])
-        inbox = cli.AllGroup().get_command({}, 'inbox')
+        inbox = src.groups.AllGroup().get_command({}, 'inbox')
         result = self.runner.invoke(inbox)
         self.assertEqual(0, result.exit_code)
         self.assertEqual(1, mock_open_url.call_count)
