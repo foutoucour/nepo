@@ -15,14 +15,22 @@ class Base(unittest.TestCase):
 
     def setUp(self):
         super(Base, self).setUp()
-        self.runner = CliRunner()
         self.tmpfile = tempfile.mkstemp()[-1]
-        self.command_manager = src.command_manager.CommandManager()
+        self.runner = CliRunner()
         self.mocks = []
-        mock_config_file = mock.patch('src.core.get_config_file_path', autospec=True, return_value=self.tmpfile)
+        mock_config_file = mock.patch(
+            'src.core.get_config_file_path',
+            autospec=True,
+            return_value=self.tmpfile
+        )
         self.mocks.append(mock_config_file)
         mock_config_file.start()
         core.generate_empty_config_file()
+
+        self.url = 'https://www.python.org'
+        self.command_name = 'python'
+
+        self.command_manager = src.command_manager.CommandManager()
 
     def tearDown(self):
         os.remove(self.tmpfile)
@@ -31,33 +39,22 @@ class Base(unittest.TestCase):
 
 
 class TestRegister(Base):
-
-    def setUp(self):
-        super(TestRegister, self).setUp()
-        self.command = cli.register
-        self.url = 'https://www.python.org'
-        self.command_name = 'python'
+    """ Test suite for the command Register."""
 
     def test_simple_registration(self):
-        self.assertNotIn(
-            self.command_name,
-            [c_name for c_name in self.command_manager.commands],
-            msg="The command {} has been found in {} ({}).".format(
-                self.command_name,
-                self.command_manager.commands,
-                core.get_config_file_path()
-            )
-        )
-        self.runner.invoke(self.command, [self.command_name, self.url])
-        self.assertIn(
-            self.command_name,
-            [c for c in self.command_manager.commands],
-            msg="The command {} has NOT been found in {} ({}).".format(
-                self.command_name,
-                self.command_manager.commands,
-                core.get_config_file_path()
-            )
-        )
+        self.assertIsNone(src.groups.AllGroup().get_command({}, self.command_name))
+        self.runner.invoke(cli.register, [self.command_name, self.url])
+        self.assertIsNotNone(src.groups.AllGroup().get_command({}, self.command_name))
+
+
+class TestDeregister(Base):
+    """ Test suite for the command deregister."""
+
+    def test_simple_deregistration(self):
+        self.runner.invoke(cli.register, [self.command_name, self.url])
+        self.assertIsNotNone(src.groups.AllGroup().get_command({}, self.command_name))
+        self.runner.invoke(cli.deregister, [self.command_name])
+        self.assertIsNone(src.groups.AllGroup().get_command({}, self.command_name))
 
 
 class TestGithub(Base):
@@ -72,7 +69,6 @@ class TestGithub(Base):
         """ Test the command without any of the optional arguments.
 
         :param mock.MagicMock mock_open_url: mock
-        :return:
         """
         result = self.runner.invoke(self.command)
         self.assertEqual(0, result.exit_code)

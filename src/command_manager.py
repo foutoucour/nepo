@@ -4,32 +4,39 @@ import json
 
 from src import core
 
+def load_config_file():
+    with core.get_config_file() as config_file:
+        return json.load(config_file)
+
 
 class CommandManager(object):
     def __init__(self):
-        self.__commands = None
+        self.commands = load_config_file()
 
-    def save(self, commands):
-        """Save the configs to the file.
-
-        :param dict commands: mapping of command name and their details
-        """
+    def _save(self):
+        """	Save the configs to the file."""
         with core.get_config_file('w') as config_file:
-            json.dump(commands, config_file)
+            json.dump(self.commands, config_file)
 
-        self.__commands = None
+        # require the update of the commands for the next time.
+        self.commands = load_config_file()
 
-    @property
-    def commands(self):
-        """Get the commands from the config file.
+    def add(self, name, details):
+        """ Add a command to the list."""
+        self.commands[name] = details
+        self._save()
 
-        :return: mapping of commands in it
-        :rtype: dict
+    def safe_delete(self, name):
+        """ Safe Remove a command to the list.
+
+        :return: True if the name has been found and removed from the list. False otherwise.
         """
-        if not self.__commands:
-            with core.get_config_file() as config_file:
-                self.__commands = json.load(config_file)
-        return self.__commands
+        if name in self.commands:
+            self.commands.pop(name, None)
+            self._save()
+            return True
+
+        return False
 
     def build_commands(self):
         """ Return the list of commands stored in the file.

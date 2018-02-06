@@ -28,15 +28,18 @@ def entry_point():
 @click.argument('name')
 @click.argument('url')
 def register(name, url):
-    """Add an url to the config."""
+    """Add an url to the list of commands."""
     command_manager = CommandManager()
-    commands = command_manager.commands
-    if name in commands:
-        commands.pop(name, None)
+    command_manager.add(name, {'url': url})
 
-    commands[name] = {'url': url}
 
-    command_manager.save(commands)
+@entry_point.command()
+@click.argument('name')
+def deregister(name):
+    """ Remove a command from the list of commands."""
+    command_manager = CommandManager()
+    if command_manager.safe_delete(name):
+        click.echo("Removed {} from the list of commands".format(name))
 
 
 @entry_point.command()
