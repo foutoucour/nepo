@@ -1,29 +1,45 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 import logging
-import sys
 
 import click
-from click_didyoumean import DYMMixin
-from click_help_colors import HelpColorsGroup
 
+from src.command_manager import CommandManager
+from src import manifest
 from src import core
+from src import groups
 
-logger = logging.getLogger('voodoo')
+logger = logging.getLogger(manifest.name)
 logging.basicConfig()
 logger.setLevel(logging.INFO)
 
 
-class AllGroup(DYMMixin, HelpColorsGroup, click.Group):  # pylint: disable=too-many-public-methods
-    pass
-
-
 @click.group(
-    cls=AllGroup,
+    cls=groups.AllGroup,
     help_headers_color='yellow',
     help_options_color='green'
 )
 @click.version_option()
 def entry_point():
     pass
+
+
+@entry_point.command()
+@click.argument('name')
+@click.argument('url')
+def register(name, url):
+    """Add an url to the list of commands."""
+    command_manager = CommandManager()
+    command_manager.add(name, {'url': url})
+
+
+@entry_point.command()
+@click.argument('name')
+def deregister(name):
+    """ Remove a command from the list of commands."""
+    command_manager = CommandManager()
+    if command_manager.safe_delete(name):
+        click.echo("Removed {} from the list of commands".format(name))
 
 
 @entry_point.command()
@@ -36,12 +52,3 @@ def github(user='', repo=''):
         if repo:
             url = '/'.join([url, repo])
     core.open_url(url)
-
-
-@entry_point.command()
-def inbox():
-    core.open_url("https://inbox.google.com")
-
-
-if __name__ == '__main__':
-    sys.exit(entry_point())

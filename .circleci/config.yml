@@ -4,7 +4,7 @@ requirements: &requirements
   name: Install requirements
   command: |
     sudo pip install "pipenv>=9.0.3"
-    pipenv install --dev
+    pipenv install -e .
 
 git_config: &git_config
   name: Git Configuration
@@ -15,7 +15,9 @@ git_config: &git_config
 
 run_test: &run_test
   name: Run test with coveage
-  command: pipenv run python setup.py test
+  command: |
+    pipenv install -r test_requirements.txt
+    pipenv run pytest --verbose --junit-xml=./log/junit.xml --cov-branch --cov=src --cov-report xml
 
 coverage_report: &coverage_report
   name: Coverage report

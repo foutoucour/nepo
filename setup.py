@@ -7,7 +7,7 @@ from src import manifest
 setup(
     name=manifest.name,
     use_scm_version=True,
-    setup_requires=['setuptools_scm', 'pytest_runner'],
+    setup_requires=['setuptools_scm'],
     description=manifest.description,
     author=manifest.author,
     author_email=manifest.email,
@@ -15,19 +15,13 @@ setup(
     packages=find_packages(exclude=('tests',)),
     entry_points='''
         [console_scripts]
-        nepo=src.cli:entry_point
-    ''',
+        {}=src.cli:entry_point
+    '''.format(manifest.name),
     install_requires=[
         'click',
         'click-didyoumean',
         'click-help-colors',
         'crayons',
-    ],
-    tests_require=[
-        'pytest',
-        'pytest-cov',
-        'pytest-random-order',
-        'mock',
     ],
     include_package_data=True,
     license='MIT',
