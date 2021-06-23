@@ -4,6 +4,7 @@ name: Demo Matrix
 on: 
   pull_request:
     types: [opened, reopened]
+  push:
 jobs:
   Explore-GitHub-Actions:
     runs-on: ${{ matrix.os }}
