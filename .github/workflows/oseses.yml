@@ -25,7 +25,7 @@ jobs:
           create-virtualenv: true
 #      - run: poetry install
       - name: run tests
-        run: lpoetry run pytest --verbose --junit-xml=./log/junit.xml --cov-branch --cov=src --cov-report xm
+        run: poetry run pytest --verbose --junit-xml=./log/junit.xml --cov-branch --cov=src --cov-report xml
       - name: Archive code coverage results
         if: ${{ runner.os == 'Linux' }}
         uses: actions/upload-artifact@v2
