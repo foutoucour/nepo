@@ -5,7 +5,7 @@ description = ""
 authors = ["Foutoucour <kender.jr@gmail.com>"]
 
 [tool.poetry.dependencies]
-python = "^3.9"
+python = "^3.8"
 click = "^8.0.1"
 click-didyoumean = "^0.0.3"
 click-help-colors = "^0.9"
