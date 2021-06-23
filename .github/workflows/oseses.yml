@@ -11,14 +11,13 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-        python-version: ['3.6', '3.7', '3.8', '3.9', '3.10']
     steps:
       - name: Check out repository code
         uses: actions/checkout@v2
       - name: Setup Python
         uses: actions/setup-python@v2.2.2
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: 3.8
 #      - run:  pip install poetry
       - name: Poetry Install
         uses: knowsuchagency/poetry-install@v2
