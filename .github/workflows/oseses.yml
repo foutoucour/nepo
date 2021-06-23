@@ -25,5 +25,16 @@ jobs:
           create-virtualenv: true
 #      - run: poetry install
       - name: run tests
-        run: poetry run pytest --verbose --junit-xml=./log/junit.xml --cov-branch --cov=src --cov-report xml
+        run: lpoetry run pytest --verbose --junit-xml=./log/junit.xml --cov-branch --cov=src --cov-report xm
+      - name: Archive code coverage results
+        if: ${{ 'ubuntu' in matrix.os }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: code-coverage-report
+          path: ./coverage.xml
+      - name: Publish Unit Test Results
+        uses: EnricoMi/publish-unit-test-result-action@v1
+        if: ${{ 'ubuntu' in matrix.os }}
+        with:
+          files: coverage.xml
 
