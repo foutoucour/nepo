@@ -19,8 +19,12 @@ jobs:
         uses: actions/setup-python@v2.2.2
         with:
           python-version: ${{ matrix.python-version }}
-      - run:  pip install poetry
-      - run: poetry install
+#      - run:  pip install poetry
+      - name: Poetry Install
+        uses: knowsuchagency/poetry-install@v2
+        with:
+          create-virtualenv: true
+#      - run: poetry install
       - name: run tests
         run: poetry run pytest --verbose --junit-xml=./log/junit.xml --cov-branch --cov=src --cov-report xml
 
