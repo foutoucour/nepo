@@ -14,7 +14,7 @@ jobs:
     steps:
       - name: Check out repository code
         uses: actions/checkout@v2
-      - run:  pip install poetry
+      - run:  pip install --user poetry
       - run: poetry install
       - name: run tests
         run: poetry run pytest --verbose --junit-xml=./log/junit.xml --cov-branch --cov=src --cov-report xml
