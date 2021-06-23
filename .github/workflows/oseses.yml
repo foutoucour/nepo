@@ -43,4 +43,20 @@ jobs:
     needs: build-tests
 #    if: github.event_name == 'release' && github.event.action == 'created'
     steps:
-      - run: echo "tadaaaa"
+      - name: Check out repository code
+        uses: actions/checkout@v2
+      - name: Setup Python
+        uses: actions/setup-python@v2.2.2
+        with:
+          python-version: 3.8
+      - name: Poetry Install
+        uses: knowsuchagency/poetry-install@v2
+        with:
+          create-virtualenv: true
+      - name: set tag name
+        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+      - run: echo ${{ env.RELEASE_VERSION }}
+      - run: poetry version ${{ env.RELEASE_VERSION }}
+      - run: poetry build
+      - run: poetry config repositories.autodesk-artifactory https://art-bobcat.autodesk.com/artifactory/api/pypi/autodesk-pypi/
+#      - run: poetry publish --repository autodesk-artifactory --username ${creds_USR} --password ${creds_PSW}
