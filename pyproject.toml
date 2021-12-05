@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "nepo"
+version = "0.1.0"
+description = ""
+authors = ["Foutoucour <kender.jr@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.6"
+click = "^8.0.1"
+click-didyoumean = "^0.0.3"
+click-help-colors = "^0.9"
+crayons = "^0.4.0"
+
+[tool.poetry.dev-dependencies]
+pytest = "^6.2.4"
+pytest-cov = "^2.12.1"
+pytest-random-order = "^1.0.4"
+mock = "^4.0.3"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
